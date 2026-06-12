@@ -42,7 +42,7 @@ $ cargo install wick
 
 Prebuilt binaries (Linux gnu/musl, macOS arm64, Windows x64) are attached to
 every [GitHub Release](https://github.com/cresset-tools/wick/releases) and
-mirrored to the cresset origin server.
+mirrored to cresset infrastructure.
 
 ## Usage
 
