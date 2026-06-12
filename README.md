@@ -27,6 +27,23 @@ directly — it does all of that and more. wick exists only for people who want
 
 Mago is licensed MIT OR Apache-2.0. wick is grateful for it.
 
+## Install
+
+```console
+# Unix
+$ curl --proto '=https' --tlsv1.2 -LsSf https://releases.bougie.tools/installers/wick/latest/wick-installer.sh | sh
+
+# Windows (PowerShell)
+> irm https://releases.bougie.tools/installers/wick/latest/wick-installer.ps1 | iex
+
+# or, from source
+$ cargo install wick
+```
+
+Prebuilt binaries (Linux gnu/musl, macOS arm64, Windows x64) are attached to
+every [GitHub Release](https://github.com/cresset-tools/wick/releases) and
+mirrored to the cresset origin server.
+
 ## Usage
 
 ```console

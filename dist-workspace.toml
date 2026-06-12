@@ -65,6 +65,23 @@ install-path = ["$XDG_BIN_HOME/", "$XDG_DATA_HOME/../bin", "~/.local/bin"]
 
 hosting = ["github"]
 
+# Download URL precedence baked into the generated installers: try the cresset
+# origin mirror first (low latency, no GitHub anonymous rate limits), fall
+# back to the GitHub release if the mirror is offline / hasn't received the
+# new tag yet. The mirror is the shared origin.bougie.tools box (see
+# publish-mirror.yml + cresset-tools/infra). Versioned artifacts live at
+# `<host>/github/wick/releases/download/<tag>/<file>` — the layout
+# publish-mirror.yml rsyncs to.
+simple-download-url = "https://releases.bougie.tools/github/wick/releases/download/{tag}"
+
+# Run publish-mirror after the release is announced to fan the dist artifacts
+# out to the origin server. (release.yml is hand-edited, so this also exists
+# as an explicit `custom-publish-mirror` job there; keep them in sync.)
+post-announce-jobs = ["./publish-mirror"]
+
+# publish-mirror only needs to read the uploaded artifacts.
+github-custom-job-permissions = { "publish-mirror" = { contents = "read" } }
+
 # Floor the gnu build at glibc 2.17 by building inside manylinux2014 (CentOS 7
 # — the manylinux2014 baseline), so the binary runs on RHEL 8 / Debian 11 /
 # Ubuntu 20.04. `host = ...-musl` makes dist run its own tooling as a static
