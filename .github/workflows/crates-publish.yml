@@ -1,0 +1,55 @@
+name: crates-publish
+
+# Publish the wick crate to crates.io on the `release: published` event that
+# release-please fires when it cuts a `wick-v<version>` GitHub Release (and
+# creates the tag). Runs alongside `release.yml` (cargo-dist binaries) — the
+# two are independent: dist builds the user-facing binaries, this publishes
+# the crate so `cargo install wick` works.
+#
+# Single crate, so no topological ordering is needed (unlike bougie's
+# 25-crate workspace). We publish the version exactly as committed at the tag;
+# release-please already bumped it.
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+  # Mint a short-lived OIDC token that crates.io exchanges for a temporary,
+  # publish-scoped API token (Trusted Publishing). No long-lived secret —
+  # configure a Trusted Publisher on crates.io pointing at
+  # (cresset-tools/wick, crates-publish.yml).
+  id-token: write
+
+concurrency:
+  group: crates-publish-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    # release-please only ever cuts `wick-v*` releases, but be explicit so a
+    # stray manual release can't trigger a publish.
+    if: startsWith(github.event.release.tag_name, 'wick-v')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.release.tag_name }}
+          persist-credentials: false
+
+      - uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          cache-bin: false
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Authenticate to crates.io
+        id: auth
+        uses: rust-lang/crates-io-auth-action@v1
+
+      - name: Publish to crates.io
+        env:
+          # cargo reads CARGO_REGISTRY_TOKEN from the env automatically.
+          CARGO_REGISTRY_TOKEN: ${{ steps.auth.outputs.token }}
+        run: cargo publish --locked

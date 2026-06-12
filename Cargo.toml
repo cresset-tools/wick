@@ -1,0 +1,34 @@
+[package]
+name = "wick"
+version = "0.1.0" # x-release-please-version
+edition = "2024"
+rust-version = "1.96"
+license = "EUPL-1.2"
+authors = ["Jelle Besseling <jelle@pingiun.com>"]
+description = "An unconfigurable, Laravel Pint-style PHP formatter. Powered by Mago."
+repository = "https://github.com/cresset-tools/wick"
+readme = "README.md"
+keywords = ["php", "formatter", "laravel", "pint", "code-style"]
+categories = ["command-line-utilities", "development-tools"]
+
+[[bin]]
+name = "wick"
+path = "src/main.rs"
+
+[dependencies]
+# The formatting engine. wick is a thin, opinionated front-end over Mago's
+# `Pint` preset — it does not parse or print PHP itself.
+# https://github.com/carthage-software/mago (MIT OR Apache-2.0)
+mago-formatter = "1.30"
+mago-php-version = "1.30"
+
+bumpalo = "3"
+clap = { version = "4", features = ["derive"] }
+ignore = "0.4"
+serde_json = "1"
+similar = "2"
+anyhow = "1"
+
+[profile.release]
+lto = "thin"
+strip = true

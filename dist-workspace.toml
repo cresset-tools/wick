@@ -1,0 +1,82 @@
+# dist configuration — produces per-target binary archives plus
+# shell/powershell installers. release-please owns the whole release: it
+# publishes the `wick-v<version>` GitHub Release (creating the tag), and the
+# `release: published` event triggers dist to build the binaries and upload
+# them onto that release.
+#
+# Edit this file when adding targets / installers, then regenerate the
+# workflow with:
+#     dist generate
+# which rewrites .github/workflows/release.yml. NOTE: `dist generate` emits an
+# `on: push: tags` trigger; we hand-edit it to `on: release: published`
+# (release-please creates tags via the API, which doesn't reliably fire
+# `push`). Re-apply that trigger edit after any regenerate. `allow-dirty =
+# ["ci"]` tells dist we own that file so its `generate --check` won't abort.
+
+[workspace]
+members = ["cargo:."]
+
+[dist]
+# Pin the dist version CI runs — bumps come through PRs so the generated
+# release.yml stays in lockstep.
+cargo-dist-version = "0.32.0"
+
+# CI provider.
+ci = "github"
+
+# uv-style installers: `curl ... | sh` on Unix, `irm ... | iex` on Windows.
+installers = ["shell", "powershell"]
+
+# Archive formats per platform.
+windows-archive = ".zip"
+unix-archive = ".tar.gz"
+
+# Target triples we ship prebuilt binaries for. Linux gets both gnu and musl
+# (older distros and Alpine both work); macOS is Apple Silicon; Windows is
+# x64.
+targets = [
+    "x86_64-unknown-linux-gnu",
+    "x86_64-unknown-linux-musl",
+    "aarch64-apple-darwin",
+    "x86_64-pc-windows-msvc",
+]
+
+# Keep the tarballs to just the binary the installer drops on PATH.
+auto-includes = false
+
+# release-please publishes the GitHub Release (with the changelog body) and
+# creates the tag; dist only attaches the built binaries.
+create-release = false
+
+# We hand-edit release.yml's trigger to `on: release: published`, so tell dist
+# we own the CI file and skip its `generate --check`.
+allow-dirty = ["ci"]
+
+# Don't run dist on PRs — CI already covers building.
+pr-run-mode = "skip"
+
+# release-please tags as `wick-v<version>` rather than the bare `v<version>`
+# dist defaults to.
+tag-namespace = "wick"
+
+# Where the shell installer drops the binary. Matches uv's layout so installs
+# land on PATH without extra config.
+install-path = ["$XDG_BIN_HOME/", "$XDG_DATA_HOME/../bin", "~/.local/bin"]
+
+hosting = ["github"]
+
+# Floor the gnu build at glibc 2.17 by building inside manylinux2014 (CentOS 7
+# — the manylinux2014 baseline), so the binary runs on RHEL 8 / Debian 11 /
+# Ubuntu 20.04. `host = ...-musl` makes dist run its own tooling as a static
+# musl binary regardless of the container's old glibc.
+[dist.github-custom-runners.x86_64-unknown-linux-gnu]
+container = { image = "quay.io/pypa/manylinux2014_x86_64", host = "x86_64-unknown-linux-musl" }
+
+# Assert the advertised glibc floor matches the manylinux2014 build above.
+# Must stay below all bare `[dist]` keys — a sub-table header captures the
+# keys after it.
+[dist.min-glibc-version]
+"*" = "2.17"
+
+[dist.binaries]
+"*" = ["wick"]
