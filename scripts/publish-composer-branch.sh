@@ -43,6 +43,15 @@ GIT_INDEX_FILE="$TMP_INDEX" git --work-tree="$STAGE" add -A
 TREE_SHA="$(GIT_INDEX_FILE="$TMP_INDEX" git --work-tree="$STAGE" write-tree)"
 rm -f "$TMP_INDEX"
 
+# Fixed identity + date so the orphan commit is fully reproducible: the same
+# version always yields the same commit SHA, in CI or locally. Regenerating an
+# already-published version is then a no-op (force-push lands the same SHA)
+# rather than churning the tag.
+export GIT_AUTHOR_NAME="cresset-bot" GIT_AUTHOR_EMAIL="noreply@cresset.tools"
+export GIT_COMMITTER_NAME="cresset-bot" GIT_COMMITTER_EMAIL="noreply@cresset.tools"
+export GIT_AUTHOR_DATE="2020-01-01T00:00:00 +0000"
+export GIT_COMMITTER_DATE="2020-01-01T00:00:00 +0000"
+
 COMMIT_SHA="$(git commit-tree "$TREE_SHA" \
     -m "chore(composer): cresset-tools/wick ${VERSION} (fetches wick-v${VERSION})")"
 

@@ -6,6 +6,9 @@ name: composer-branch
 # fetches the wick-vX.Y.Z binary at runtime. Packagist's GitHub webhook
 # picks up the new tag automatically.
 #
+# Also runnable manually (workflow_dispatch) to re-publish a version or to
+# verify the generator end-to-end without cutting a release.
+#
 # Pushing the composer branch / v* tag does not trigger any other workflow:
 # ci.yml and release-please.yml only run on push to `main`, and release.yml
 # only runs on `release: published` (the v* tag is not a `wick-v*` release).
@@ -13,6 +16,12 @@ name: composer-branch
 on:
   release:
     types: [published]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "wick version to (re)publish, e.g. 0.2.1 (default: latest release)"
+        required: false
+        type: string
 
 permissions:
   contents: write
@@ -23,18 +32,33 @@ concurrency:
 
 jobs:
   publish:
-    # Only the formatter's own releases, not any stray manual release.
-    if: startsWith(github.event.release.tag_name, 'wick-v')
+    # The formatter's own releases, or any manual dispatch.
+    if: ${{ github.event_name == 'workflow_dispatch' || startsWith(github.event.release.tag_name, 'wick-v') }}
     runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
     steps:
       - uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
+      - name: Resolve version
+        id: ver
+        run: |
+          if [ "${{ github.event_name }}" = "release" ]; then
+            version='${{ github.event.release.tag_name }}'
+          else
+            version='${{ inputs.version }}'
+            if [ -z "$version" ]; then
+              version="$(gh release view --json tagName -q .tagName)"
+            fi
+          fi
+          version="${version#wick-v}"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "Resolved wick version: $version"
+
       - name: Publish composer branch + tag
         run: |
-          version='${{ github.event.release.tag_name }}'
-          version="${version#wick-v}"
           git config user.name "cresset-bot"
           git config user.email "noreply@cresset.tools"
-          scripts/publish-composer-branch.sh "$version"
+          scripts/publish-composer-branch.sh "${{ steps.ver.outputs.version }}"
