@@ -26,6 +26,15 @@ path = "src/main.rs"
 mago-formatter = "1.30"
 mago-php-version = "1.30"
 
+# The linting engine (`wick check`). Same spirit as the formatter: wick runs
+# Mago's default rule set, unconfigured, at the detected PHP version.
+mago-linter = "1.30"
+mago-database = "1.30"
+mago-syntax = "1.30"
+mago-names = "1.30"
+mago-reporting = "1.30"
+mago-text-edit = "1.30"
+
 bumpalo = "3"
 clap = { version = "4", features = ["derive"] }
 ignore = "0.4"
