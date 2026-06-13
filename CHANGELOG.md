@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.2.3](https://github.com/cresset-tools/wick/compare/wick-v0.2.2...wick-v0.2.3) (2026-06-13)
+
+
+### Bug Fixes
+
+* **composer:** add root composer.json so Packagist can discover the package ([2881377](https://github.com/cresset-tools/wick/commit/2881377c20ca5a86b791fd6da8d5a063382cb72c))
+* only format .php files; format in parallel ([8627fd9](https://github.com/cresset-tools/wick/commit/8627fd9a6ae6e2a6fb317e799753566dacd2f330))
+
 ## [0.2.2](https://github.com/cresset-tools/wick/compare/wick-v0.2.1...wick-v0.2.2) (2026-06-13)
 
 
