@@ -1,6 +1,6 @@
 [package]
 name = "wick"
-version = "0.2.3" # x-release-please-version
+version = "0.3.0" # x-release-please-version
 edition = "2024"
 rust-version = "1.96"
 license = "EUPL-1.2"
