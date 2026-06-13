@@ -132,7 +132,11 @@ fn process_file(path: &Path, check: bool, diff: bool, php_version: PHPVersion) -
     }
 
     if diff {
-        Outcome::Changed(Some(render_diff(&path.to_string_lossy(), &original, &formatted)))
+        Outcome::Changed(Some(render_diff(
+            &path.to_string_lossy(),
+            &original,
+            &formatted,
+        )))
     } else if check {
         Outcome::Changed(Some(format!("Would reformat: {}\n", path.display())))
     } else {
