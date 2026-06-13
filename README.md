@@ -1,12 +1,18 @@
 # wick
 
 An **unconfigurable**, Laravel [Pint](https://laravel.com/docs/pint)-style PHP
-formatter — fast, single static binary, no PHP runtime required.
+formatter and linter — fast, single static binary, no PHP runtime required.
 
 `wick` is to PHP what `gofmt` is to Go: one style, no knobs. There is no
 config file, no preset selection, no rule toggles. You point it at your code
 and it formats it. The only flags decide what to *do* with the result —
 write, check, or diff — never *how* the code is formatted.
+
+`wick check` adds linting in the same spirit: it runs Mago's default rule set,
+unconfigured, at the PHP version your `composer.json` declares — no
+`--select`, no `--ignore`, no severities to tune. It mirrors `ruff check`:
+report by default, `--fix` to apply safe fixes, `--fix --unsafe-fixes` for the
+rest, `--diff` to preview.
 
 Part of the [cresset-tools](https://github.com/cresset-tools) family,
 alongside [bougie](https://github.com/cresset-tools/bougie).
@@ -18,12 +24,13 @@ parser, AST, and the Wadler-style pretty-printer that does the actual
 formatting — is [**Mago**](https://github.com/carthage-software/mago), an
 excellent PHP toolchain written in Rust by
 [Carthage Software](https://carthage.software). wick simply pins Mago's
-`Pint` style preset and the latest supported PHP version, and wraps them in a
-deliberately minimal CLI.
+`Pint` style preset and default lint rules, targets the PHP version it detects,
+and wraps them in a deliberately minimal CLI.
 
-If you want a configurable formatter, a linter, or a static analyzer, use Mago
-directly — it does all of that and more. wick exists only for people who want
-"Laravel style, no decisions."
+If you want a *configurable* formatter or linter, rule selection, severities,
+framework integrations, or a static analyzer/type checker, use Mago directly —
+it does all of that and more. wick exists only for people who want "Laravel
+style, no decisions."
 
 Mago is licensed MIT OR Apache-2.0. wick is grateful for it.
 
@@ -46,15 +53,30 @@ mirrored to cresset infrastructure.
 
 ## Usage
 
+Like `ruff`, wick has no default action — pick `format` or `check`. Bare
+`wick` just prints help.
+
 ```console
-$ wick                  # format every .php file under the current directory
-$ wick src tests        # format specific files or directories
-$ wick --check          # CI mode: exit non-zero if anything is unformatted
-$ wick --diff           # print what would change, write nothing
-$ cat a.php | wick -     # format stdin, write to stdout
+$ wick format                 # format every .php file under the current directory
+$ wick format src tests       # format specific files or directories
+$ wick format --check         # CI mode: exit non-zero if anything is unformatted
+$ wick format --diff          # print what would change, write nothing
+$ cat a.php | wick format -    # format stdin, write to stdout
 ```
 
-Directories are walked respecting `.gitignore`.
+Linting mirrors `ruff check`:
+
+```console
+$ wick check                  # lint every .php file under the current directory
+$ wick check src tests        # lint specific files or directories
+$ wick check --fix            # apply safe fixes in place
+$ wick check --fix --unsafe-fixes   # also apply behaviour-changing fixes
+$ wick check --diff           # preview the fixes --fix would apply
+$ cat a.php | wick check -     # lint stdin
+```
+
+Fixable problems are flagged with `[*]`. Directories are walked respecting
+`.gitignore`.
 
 ## Compatibility note
 

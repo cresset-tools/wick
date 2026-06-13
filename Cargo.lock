@@ -146,9 +146,9 @@ dependencies = [
 
 [[package]]
 name = "cc"
-version = "1.2.63"
+version = "1.2.64"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "556e016178bb5662a08681bbe0f00f8e17631781a4dfc8c45e466e4b185ec27f"
+checksum = "dad887fd958be91b5098c0248def011f4523ab786cd411be668777e55063501f"
 dependencies = [
  "find-msvc-tools",
  "shlex",
@@ -258,6 +258,16 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d0a5c400df2834b80a4c3327b3aad3a4c4cd4de0629063962b03235697506a28"
 
 [[package]]
+name = "cruet"
+version = "0.15.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b7a9ae414b9768aada1b316493261653e41af05c9d2ccc9c504a8fc051c6a790"
+dependencies = [
+ "once_cell",
+ "regex",
+]
+
+[[package]]
 name = "dyn-clone"
 version = "1.0.20"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -360,6 +370,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "indoc"
+version = "2.0.7"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "79cf5c93f93228cf8efb3ba362535fb11199ac548a09ce117c9b1adc3030d706"
+dependencies = [
+ "rustversion",
+]
+
+[[package]]
 name = "inotify"
 version = "0.11.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -430,6 +449,37 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "953f07c43838f8e6f9758cab68bf5bed85465e7587ebe0b823f1bcd81978ad3a"
 
 [[package]]
+name = "mago-bytes"
+version = "1.30.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6820d06959e91c34d8f988adef065b4eef9524c9d354571899176abbd5fe871e"
+
+[[package]]
+name = "mago-casing"
+version = "1.30.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b26477b41fc33d85048bec8693a41333b8137edf874bcec060daa60a8927b9f3"
+dependencies = [
+ "cruet",
+]
+
+[[package]]
+name = "mago-collector"
+version = "1.30.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "26389034c5f27317e65881af272adb89be8b39befeac3414e993be952b451012"
+dependencies = [
+ "bumpalo",
+ "foldhash",
+ "mago-database",
+ "mago-reporting",
+ "mago-span",
+ "mago-syntax",
+ "mago-text-edit",
+ "memchr",
+]
+
+[[package]]
 name = "mago-database"
 version = "1.30.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -444,6 +494,19 @@ dependencies = [
  "serde",
  "tracing",
  "walkdir",
+]
+
+[[package]]
+name = "mago-docblock"
+version = "1.30.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ab38819c39bda4b42a0b815e8cb9a129bd60c35b4108e35f0a995a2a65ab487e"
+dependencies = [
+ "bumpalo",
+ "mago-span",
+ "mago-syntax",
+ "memchr",
+ "serde",
 ]
 
 [[package]]
@@ -462,6 +525,51 @@ dependencies = [
  "schemars",
  "serde",
  "unicode-width",
+]
+
+[[package]]
+name = "mago-linter"
+version = "1.30.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "610559e9083eae455a3c34cc191a812223d581658f5edf974ee8cb9bdf113f0a"
+dependencies = [
+ "bumpalo",
+ "foldhash",
+ "indoc",
+ "mago-bytes",
+ "mago-casing",
+ "mago-collector",
+ "mago-database",
+ "mago-docblock",
+ "mago-names",
+ "mago-php-version",
+ "mago-reporting",
+ "mago-span",
+ "mago-syntax",
+ "mago-text-edit",
+ "mago-word",
+ "memchr",
+ "regex",
+ "schemars",
+ "serde",
+ "serde_json",
+ "tracing",
+]
+
+[[package]]
+name = "mago-names"
+version = "1.30.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b65a9f0df2644d265784140108bb85f442df0097e578a95adf422f10589c9362"
+dependencies = [
+ "bumpalo",
+ "foldhash",
+ "mago-span",
+ "mago-syntax",
+ "mago-word",
+ "memchr",
+ "serde",
+ "strum 0.28.0",
 ]
 
 [[package]]
@@ -545,6 +653,19 @@ version = "1.30.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "5d4a98c6116e0e037b380d436c9fdd65a4318cc70a6f9fcc54a7f8af40a2fcc3"
 dependencies = [
+ "serde",
+]
+
+[[package]]
+name = "mago-word"
+version = "1.30.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "915e0872f19f883dc7532becc9cae21174d3b403ea0c5da05cc68126955ed153"
+dependencies = [
+ "foldhash",
+ "itoa",
+ "mago-bytes",
+ "ryu",
  "serde",
 ]
 
@@ -752,6 +873,18 @@ name = "regex-syntax"
 version = "0.8.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d6f6ff9a378485b298a5286656da665ba74413d36db0979633275d2e708145d4"
+
+[[package]]
+name = "rustversion"
+version = "1.0.22"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b39cdef0fa800fc44525c84ccb54a029961a8215f9619753635a9c0d2538d46d"
+
+[[package]]
+name = "ryu"
+version = "1.0.23"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9774ba4a74de5f7b1c1451ed6cd5285a32eddb5cccb8cc655a4e50009e06477f"
 
 [[package]]
 name = "same-file"
@@ -1103,8 +1236,14 @@ dependencies = [
  "bumpalo",
  "clap",
  "ignore",
+ "mago-database",
  "mago-formatter",
+ "mago-linter",
+ "mago-names",
  "mago-php-version",
+ "mago-reporting",
+ "mago-syntax",
+ "mago-text-edit",
  "rayon",
  "serde_json",
  "similar",
