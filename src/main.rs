@@ -19,6 +19,7 @@ use std::process::ExitCode;
 use clap::Parser;
 use ignore::WalkBuilder;
 use mago_php_version::PHPVersion;
+use rayon::prelude::*;
 use similar::{ChangeTag, TextDiff};
 
 use crate::format::format_php;
@@ -71,16 +72,28 @@ fn main() -> ExitCode {
         return ExitCode::SUCCESS;
     }
 
+    // Format every file in parallel (each `format_php` is independent — its
+    // own arena, no shared state), then report in stable file order so diffs
+    // and messages never interleave. rayon uses all cores by default.
+    let outcomes: Vec<Outcome> = files
+        .par_iter()
+        .map(|path| process_file(path, cli.check, cli.diff, php_version))
+        .collect();
+
     let mut changed = 0usize;
     let mut errors = 0usize;
-
-    for path in &files {
-        match process_file(path, cli.check, cli.diff, php_version) {
-            Ok(true) => changed += 1,
-            Ok(false) => {}
-            Err(message) => {
-                eprintln!("error: {}: {message}", path.display());
+    for (path, outcome) in files.iter().zip(&outcomes) {
+        match outcome {
+            Outcome::Unchanged => {}
+            Outcome::Changed(message) => {
+                changed += 1;
+                if let Some(message) = message {
+                    print!("{message}");
+                }
+            }
+            Outcome::Failed(message) => {
                 errors += 1;
+                eprintln!("error: {}: {message}", path.display());
             }
         }
     }
@@ -94,29 +107,40 @@ fn main() -> ExitCode {
     }
 }
 
-/// Returns Ok(true) if the file's content was (or would be) changed.
-fn process_file(
-    path: &Path,
-    check: bool,
-    diff: bool,
-    php_version: PHPVersion,
-) -> Result<bool, String> {
-    let original = std::fs::read_to_string(path).map_err(|e| e.to_string())?;
-    let formatted = format_php(&path.to_string_lossy(), &original, php_version)?;
+/// What happened to one file. Carries any text to print so the parallel pass
+/// stays pure and `main` emits output in deterministic order.
+enum Outcome {
+    Unchanged,
+    /// Changed (or would change). `Some` text is printed verbatim in order
+    /// (a `--diff` hunk or a `--check` line); `None` means it was written.
+    Changed(Option<String>),
+    Failed(String),
+}
+
+fn process_file(path: &Path, check: bool, diff: bool, php_version: PHPVersion) -> Outcome {
+    let original = match std::fs::read_to_string(path) {
+        Ok(text) => text,
+        Err(error) => return Outcome::Failed(error.to_string()),
+    };
+    let formatted = match format_php(&path.to_string_lossy(), &original, php_version) {
+        Ok(out) => out,
+        Err(message) => return Outcome::Failed(message),
+    };
 
     if formatted == original {
-        return Ok(false);
+        return Outcome::Unchanged;
     }
 
     if diff {
-        print_diff(&path.to_string_lossy(), &original, &formatted);
+        Outcome::Changed(Some(render_diff(&path.to_string_lossy(), &original, &formatted)))
     } else if check {
-        println!("Would reformat: {}", path.display());
+        Outcome::Changed(Some(format!("Would reformat: {}\n", path.display())))
     } else {
-        std::fs::write(path, &formatted).map_err(|e| e.to_string())?;
+        match std::fs::write(path, &formatted) {
+            Ok(()) => Outcome::Changed(None),
+            Err(error) => Outcome::Failed(error.to_string()),
+        }
     }
-
-    Ok(true)
 }
 
 fn run_stdin(cli: &Cli, php_version: PHPVersion) -> ExitCode {
@@ -135,7 +159,7 @@ fn run_stdin(cli: &Cli, php_version: PHPVersion) -> ExitCode {
     };
 
     if cli.diff {
-        print_diff("<stdin>", &input, &formatted);
+        print!("{}", render_diff("<stdin>", &input, &formatted));
         return if formatted == input {
             ExitCode::SUCCESS
         } else {
@@ -155,16 +179,22 @@ fn run_stdin(cli: &Cli, php_version: PHPVersion) -> ExitCode {
     ExitCode::SUCCESS
 }
 
+/// wick only ever touches `.php` files — including ones passed explicitly
+/// (so a pre-commit hook, editor, or shell glob handing wick a `composer.lock`
+/// / `.json` / anything else leaves it untouched). Directories are walked
+/// respecting `.gitignore`.
 fn collect_php_files(roots: &[PathBuf]) -> Vec<PathBuf> {
     let mut files = Vec::new();
     for root in roots {
         if root.is_file() {
-            files.push(root.clone());
+            if is_php(root) {
+                files.push(root.clone());
+            }
             continue;
         }
         for entry in WalkBuilder::new(root).build().flatten() {
             let path = entry.path();
-            if path.is_file() && path.extension().is_some_and(|e| e == "php") {
+            if path.is_file() && is_php(path) {
                 files.push(path.to_path_buf());
             }
         }
@@ -174,18 +204,26 @@ fn collect_php_files(roots: &[PathBuf]) -> Vec<PathBuf> {
     files
 }
 
-fn print_diff(name: &str, original: &str, formatted: &str) {
+fn is_php(path: &Path) -> bool {
+    path.extension()
+        .is_some_and(|ext| ext.eq_ignore_ascii_case("php"))
+}
+
+fn render_diff(name: &str, original: &str, formatted: &str) -> String {
+    use std::fmt::Write as _;
+    let mut out = String::new();
+    let _ = writeln!(out, "--- {name}");
+    let _ = writeln!(out, "+++ {name} (formatted)");
     let diff = TextDiff::from_lines(original, formatted);
-    println!("--- {name}");
-    println!("+++ {name} (formatted)");
     for change in diff.iter_all_changes() {
         let sign = match change.tag() {
             ChangeTag::Delete => "-",
             ChangeTag::Insert => "+",
             ChangeTag::Equal => " ",
         };
-        print!("{sign}{change}");
+        let _ = write!(out, "{sign}{change}");
     }
+    out
 }
 
 fn report(total: usize, changed: usize, errors: usize, check: bool, diff: bool) {

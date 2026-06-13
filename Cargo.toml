@@ -10,10 +10,10 @@ repository = "https://github.com/cresset-tools/wick"
 readme = "README.md"
 keywords = ["php", "formatter", "laravel", "pint", "code-style"]
 categories = ["command-line-utilities", "development-tools"]
-# The Composer distribution (PHP launcher + generator) and the root
-# composer.json exist only for Packagist; keep them out of the crates.io
-# tarball, which ships just the Rust formatter.
-exclude = ["/packaging", "/composer.json", "/scripts", "/.github"]
+# The Composer distribution (PHP launcher + generator) exists only for
+# Packagist; keep it out of the crates.io tarball, which ships just the Rust
+# formatter.
+exclude = ["/packaging", "/scripts", "/.github"]
 
 [[bin]]
 name = "wick"
@@ -29,6 +29,7 @@ mago-php-version = "1.30"
 bumpalo = "3"
 clap = { version = "4", features = ["derive"] }
 ignore = "0.4"
+rayon = "1"
 serde_json = "1"
 similar = "3"
 anyhow = "1"
