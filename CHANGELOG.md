@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.2](https://github.com/cresset-tools/wick/compare/wick-v0.2.1...wick-v0.2.2) (2026-06-13)
+
+
+### Bug Fixes
+
+* **dist:** make installers prefer the mirror (hosting=[simple,github]) ([2c16d30](https://github.com/cresset-tools/wick/commit/2c16d303e8c8b0cd3f81c49d682bedfdd89a829f))
+
 ## [0.2.1](https://github.com/cresset-tools/wick/compare/wick-v0.2.0...wick-v0.2.1) (2026-06-13)
 
 
