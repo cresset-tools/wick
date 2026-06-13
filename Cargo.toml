@@ -32,3 +32,10 @@ anyhow = "1"
 [profile.release]
 lto = "thin"
 strip = true
+
+# cargo-dist builds release artifacts with `--profile dist`. Inherit
+# release; dist expects this profile to exist (normally added by
+# `dist init`).
+[profile.dist]
+inherits = "release"
+lto = "thin"
