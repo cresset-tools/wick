@@ -1,0 +1,40 @@
+name: composer-branch
+
+# On each wick release, (re)generate the orphan `composer` branch + the
+# matching vX.Y.Z tag that Packagist serves for cresset-tools/wick. That
+# branch contains only the PHP launcher (no Rust source); the launcher
+# fetches the wick-vX.Y.Z binary at runtime. Packagist's GitHub webhook
+# picks up the new tag automatically.
+#
+# Pushing the composer branch / v* tag does not trigger any other workflow:
+# ci.yml and release-please.yml only run on push to `main`, and release.yml
+# only runs on `release: published` (the v* tag is not a `wick-v*` release).
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: composer-branch
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    # Only the formatter's own releases, not any stray manual release.
+    if: startsWith(github.event.release.tag_name, 'wick-v')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Publish composer branch + tag
+        run: |
+          version='${{ github.event.release.tag_name }}'
+          version="${version#wick-v}"
+          git config user.name "cresset-bot"
+          git config user.email "noreply@cresset.tools"
+          scripts/publish-composer-branch.sh "$version"
