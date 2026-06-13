@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.3.0](https://github.com/cresset-tools/wick/compare/wick-v0.2.3...wick-v0.3.0) (2026-06-13)
+
+
+### ⚠ BREAKING CHANGES
+
+* bare `wick <paths>` no longer formats. Use `wick format <paths>`. Update pre-commit hooks and CI accordingly.
+
+### Features
+
+* add `wick check` linter and require a subcommand ([#6](https://github.com/cresset-tools/wick/issues/6)) ([ece02c0](https://github.com/cresset-tools/wick/commit/ece02c057466e09d24b9d519d0cdddf3a915ecc3))
+
 ## [0.2.3](https://github.com/cresset-tools/wick/compare/wick-v0.2.2...wick-v0.2.3) (2026-06-13)
 
 
