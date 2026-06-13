@@ -1097,7 +1097,7 @@ checksum = "ccf3ec651a847eb01de73ccad15eb7d99f80485de043efb2f370cd654f4ea44b"
 
 [[package]]
 name = "wick"
-version = "0.2.2"
+version = "0.2.3"
 dependencies = [
  "anyhow",
  "bumpalo",
@@ -1105,6 +1105,7 @@ dependencies = [
  "ignore",
  "mago-formatter",
  "mago-php-version",
+ "rayon",
  "serde_json",
  "similar",
 ]
