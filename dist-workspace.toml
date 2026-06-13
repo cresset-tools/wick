@@ -63,12 +63,15 @@ tag-namespace = "wick"
 # land on PATH without extra config.
 install-path = ["$XDG_BIN_HOME/", "$XDG_DATA_HOME/../bin", "~/.local/bin"]
 
-hosting = ["github"]
+# Mirror first, GitHub fallback. The "simple" host MUST be listed in `hosting`
+# for it to reach the generated installer — `simple-download-url` alone only
+# *enables* the host; order here is the download precedence the shell/
+# powershell installers use (try the mirror, fall back to the GitHub release
+# if it's offline / hasn't ingested the new tag yet). This matches the PHP
+# launcher (packaging/composer) and `bougie format`.
+hosting = ["simple", "github"]
 
-# Download URL precedence baked into the generated installers: try the cresset
-# origin mirror first (low latency, no GitHub anonymous rate limits), fall
-# back to the GitHub release if the mirror is offline / hasn't received the
-# new tag yet. The mirror is the shared origin.bougie.tools box (see
+# The cresset origin mirror (shared origin.bougie.tools box; see
 # publish-mirror.yml + cresset-tools/infra). Versioned artifacts live at
 # `<host>/github/wick/releases/download/<tag>/<file>` — the layout
 # publish-mirror.yml rsyncs to.
