@@ -38,10 +38,10 @@ Mago is licensed MIT OR Apache-2.0. wick is grateful for it.
 
 ```console
 # Unix
-$ curl --proto '=https' --tlsv1.2 -LsSf https://releases.bougie.tools/installers/wick/latest/wick-installer.sh | sh
+$ curl -LsSf https://bougie.tools/wick.sh | sh
 
 # Windows (PowerShell)
-> irm https://releases.bougie.tools/installers/wick/latest/wick-installer.ps1 | iex
+> irm https://bougie.tools/wick.ps1 | iex
 
 # or, from source
 $ cargo install wick
