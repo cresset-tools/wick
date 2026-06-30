@@ -7,7 +7,7 @@
 
 use std::borrow::Cow;
 
-use bumpalo::Bump;
+use mago_allocator::LocalArena;
 use mago_formatter::Formatter;
 use mago_formatter::presets::FormatterPreset;
 use mago_php_version::PHPVersion;
@@ -25,7 +25,7 @@ const STYLE: FormatterPreset = FormatterPreset::Pint;
 /// This is a from-scratch reprint: original whitespace is discarded and the
 /// AST is printed anew, exactly like `gofmt`, Prettier, or Black.
 pub fn format_php(name: &str, source: &str, php_version: PHPVersion) -> Result<String, String> {
-    let arena = Bump::new();
+    let arena = LocalArena::new();
     let formatter = Formatter::new(&arena, php_version, STYLE.settings());
 
     let name: Cow<'static, [u8]> = Cow::Owned(name.as_bytes().to_vec());
