@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace CressetTools\Wick;
+namespace Cresset\Wick;
 
 use RuntimeException;
 
@@ -20,7 +20,7 @@ final class Launcher
 {
     private const MIRROR_BASE = 'https://releases.bougie.tools/github/wick/releases/download';
     private const GITHUB_BASE = 'https://github.com/cresset-tools/wick/releases/download';
-    private const USER_AGENT = 'cresset-tools/wick composer installer';
+    private const USER_AGENT = 'cresset/wick composer installer';
 
     /** @param list<string> $args */
     public static function main(array $args): int

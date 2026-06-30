@@ -3,12 +3,12 @@
 
 declare(strict_types=1);
 
-// Composer `bin` entry for cresset-tools/wick. wick is a Rust binary; this
+// Composer `bin` entry for cresset/wick. wick is a Rust binary; this
 // package ships only this thin launcher, which fetches the matching
 // prebuilt `wick` for the current platform on first use, caches it, and
 // execs it — the same model as `uv format` and Mago's `composer/bin/mago`.
 
-namespace CressetTools\Wick;
+namespace Cresset\Wick;
 
 require __DIR__ . '/../src/Launcher.php';
 

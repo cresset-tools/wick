@@ -1,7 +1,7 @@
 name: composer-branch
 
 # On each wick release, (re)generate the orphan `composer` branch + the
-# matching vX.Y.Z tag that Packagist serves for cresset-tools/wick. That
+# matching vX.Y.Z tag that Packagist serves for cresset/wick. That
 # branch contains only the PHP launcher (no Rust source); the launcher
 # fetches the wick-vX.Y.Z binary at runtime. Packagist's GitHub webhook
 # picks up the new tag automatically.

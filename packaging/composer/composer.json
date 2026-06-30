@@ -1,5 +1,5 @@
 {
-    "name": "cresset-tools/wick",
+    "name": "cresset/wick",
     "description": "An unconfigurable, Laravel Pint-style PHP formatter. Fetches a prebuilt Rust binary on demand; powered by Mago.",
     "type": "library",
     "license": "EUPL-1.2",
