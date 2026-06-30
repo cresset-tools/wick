@@ -51,6 +51,30 @@ Prebuilt binaries (Linux gnu/musl, macOS arm64, Windows x64) are attached to
 every [GitHub Release](https://github.com/cresset-tools/wick/releases) and
 mirrored to cresset infrastructure.
 
+### In a PHP project (Composer)
+
+wick is on [Packagist](https://packagist.org/packages/cresset/wick) as
+`cresset/wick`. The Composer package ships only a thin PHP launcher; on first
+run it downloads the prebuilt `wick` binary for your platform and caches it.
+
+```console
+$ composer require --dev cresset/wick
+$ vendor/bin/wick format          # format every .php under the current dir
+$ vendor/bin/wick format --check  # CI: non-zero if anything is unformatted
+$ vendor/bin/wick check           # lint
+```
+
+### Without installing (bgx)
+
+[bougie](https://bougie.tools)'s `bgx` (like npx) runs wick in an isolated,
+globally-cached environment without adding it to your project. Everything after
+the package is forwarded straight to wick:
+
+```console
+$ bgx cresset/wick format
+$ bgx cresset/wick check src tests
+```
+
 ## Usage
 
 Like `ruff`, wick has no default action — pick `format` or `check`. Bare
