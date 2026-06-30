@@ -12,7 +12,7 @@
 
 use std::borrow::Cow;
 
-use bumpalo::Bump;
+use mago_allocator::LocalArena;
 use mago_database::file::File;
 use mago_linter::Linter;
 use mago_linter::settings::Settings;
@@ -52,7 +52,7 @@ pub fn lint_php(
     php_version: PHPVersion,
     apply: Option<Safety>,
 ) -> LintOutcome {
-    let arena = Bump::new();
+    let arena = LocalArena::new();
 
     let file = File::ephemeral(
         Cow::Owned(name.as_bytes().to_vec()),
