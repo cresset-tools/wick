@@ -66,9 +66,9 @@ $ vendor/bin/wick check           # lint
 
 ### Without installing (bgx)
 
-[bougie](https://bougie.tools)'s `bgx` (a shortcut for `bougie tool run`) runs
-wick in an isolated, globally-cached environment without adding it to your
-project. Everything after the package is forwarded straight to wick:
+[bougie](https://bougie.tools)'s `bgx` (like npx) runs wick in an isolated,
+globally-cached environment without adding it to your project. Everything after
+the package is forwarded straight to wick:
 
 ```console
 $ bgx cresset/wick format
