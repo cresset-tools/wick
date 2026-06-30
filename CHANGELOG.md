@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.3.0](https://github.com/cresset-tools/wick/compare/wick-v0.2.3...wick-v0.3.0) (2026-06-30)
+
+
+### ⚠ BREAKING CHANGES
+
+* **composer:** rename Packagist vendor to cresset/wick
+* bare `wick <paths>` no longer formats. Use `wick format <paths>`. Update pre-commit hooks and CI accordingly.
+
+### Features
+
+* add `wick check` linter and require a subcommand ([#6](https://github.com/cresset-tools/wick/issues/6)) ([ece02c0](https://github.com/cresset-tools/wick/commit/ece02c057466e09d24b9d519d0cdddf3a915ecc3))
+* **composer:** rename Packagist vendor to cresset/wick ([fbcc0b6](https://github.com/cresset-tools/wick/commit/fbcc0b66ecfdcfb8e3f5bf2cce6259345b940d82))
+
+
+### Bug Fixes
+
+* **composer:** re-add root composer.json so Packagist re-discovers cresset/wick ([5b7cbeb](https://github.com/cresset-tools/wick/commit/5b7cbeb889b5a220fc8f78b511deab6cb23e82e8))
+
 ## [0.2.3](https://github.com/cresset-tools/wick/compare/wick-v0.2.2...wick-v0.2.3) (2026-06-13)
 
 
