@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.1](https://github.com/cresset-tools/wick/compare/wick-v0.3.0...wick-v0.3.1) (2026-06-30)
+
+
+### Bug Fixes
+
+* **deps:** upgrade mago to 1.42 and migrate to LocalArena ([#9](https://github.com/cresset-tools/wick/issues/9)) ([4418f2a](https://github.com/cresset-tools/wick/commit/4418f2acf8f033cf020ccdb15db34d58b967a907))
+
 ## [0.3.0](https://github.com/cresset-tools/wick/compare/wick-v0.2.3...wick-v0.3.0) (2026-06-30)
 
 
