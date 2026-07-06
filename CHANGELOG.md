@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.0](https://github.com/cresset-tools/wick/compare/wick-v0.3.1...wick-v0.4.0) (2026-07-06)
+
+
+### Features
+
+* **composer:** declare native-binary metadata for bougie prefetch ([#15](https://github.com/cresset-tools/wick/issues/15)) ([8510269](https://github.com/cresset-tools/wick/commit/8510269f4d3bbaca20772d2611b04a97344771ea))
+
 ## [0.3.1](https://github.com/cresset-tools/wick/compare/wick-v0.3.0...wick-v0.3.1) (2026-06-30)
 
 
