@@ -30,7 +30,7 @@ jobs:
       # and is read by this action. `cache-bin: false` avoids a recurring macOS
       # failure where the cached `~/.cargo/bin/cargo` was the rustup-init
       # multiplexer rather than the cargo proxy.
-      - uses: actions-rust-lang/setup-rust-toolchain@v1
+      - uses: actions-rust-lang/setup-rust-toolchain@v2
         with:
           cache-bin: false
 
@@ -48,7 +48,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - uses: actions-rust-lang/setup-rust-toolchain@v1
+      - uses: actions-rust-lang/setup-rust-toolchain@v2
         with:
           cache-bin: false
 
