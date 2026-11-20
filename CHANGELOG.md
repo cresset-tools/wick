@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.1](https://github.com/cresset-tools/wick/compare/wick-v0.4.0...wick-v0.4.1) (2026-11-20)
+
+
+### Bug Fixes
+
+* **wick:** update locked dependencies ([2d4248e](https://github.com/cresset-tools/wick/commit/2d4248e97b66c2ea890fe2092be3f04792698455))
+
 ## [0.4.0](https://github.com/cresset-tools/wick/compare/wick-v0.3.1...wick-v0.4.0) (2026-07-06)
 
 
